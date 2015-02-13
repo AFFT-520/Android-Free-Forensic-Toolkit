@@ -1,5 +1,6 @@
 #!/bin/bash
-
+clear
+/opt/afft/legal-prompt.sh
 echo "Please provide the directory name for the case items"
 read phonecase
 if [ ! -d $HOME/afft-cases ]; then
