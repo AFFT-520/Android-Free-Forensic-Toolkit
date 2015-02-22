@@ -4,6 +4,5 @@ sudo losetup -a | grep -e "$1" -e "/image/image.dd" | awk '{print $1}' | sed 's/
 sudo umount $line
 sudo losetup -d $line
 done
-cat $1/mount/mountinfo | awk '{print $2}' | while read line; do
-rm -rf $1/mount/$line
-done
+sudo umount $1/mount/* #Incase the above didnt work
+find $1/mount/* -maxdepth 0 -empty -exec rm -rf {} \;

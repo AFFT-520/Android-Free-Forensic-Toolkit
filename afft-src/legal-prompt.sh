@@ -10,7 +10,12 @@ function disclaimer {
 	answer=$(echo $answer | tr '[:upper:]' '[:lower:]')
 	if [ $answer == "y" ]; then
 		clear
-		echo "read-disclaimer == 1" > $HOME/.afft
+	grep -q "ReadDisclaimer" $HOME/.afft 
+		if [ $? -ne 0 ]; then
+			echo "ReadDisclaimer=1" >> $HOME/.afft
+		else	
+			sed -n -i "s/ReadDisclaimer=.*/ReadDisclaimer=1/" $HOME/.afft
+		fi
 	elif [ $answer == "n" ]; then
 		clear		
 		exit
@@ -22,7 +27,7 @@ function disclaimer {
 
 
 if [ -f $HOME/.afft ]; then
-grep "read-disclaimer == 1" $HOME/.afft > /dev/zero
+grep "ReadDisclaimer=1" $HOME/.afft > /dev/zero
 if [ $? -ne 0 ]; then
 disclaimer
 fi
