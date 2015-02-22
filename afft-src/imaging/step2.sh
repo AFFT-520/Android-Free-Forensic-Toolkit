@@ -12,3 +12,9 @@ gdisk -l image.dd > partitioninfo # gets partition info from the image. We'll ne
 cat ./partitioninfo | awk 'f;/Number/{f=1}' > tmpdata # strips the header from the data, makes parsing via script much easier.
 cat ./tmpdata | awk '{print $2, $7}' > ../mount/mountinfo # alters the patition info file to include info only useful to the mounting script
 cd $currentDir
+echo "Done! Is the user data partition called 'userdata'? If not, type in the name"	#gets the name of the userdata partition, incase it isn't the default
+read userdata
+if [ -z $userdata ]; then
+	userdata="$1/mount/userdata"
+fi
+echo $userdata > $1/userdata-name.txt

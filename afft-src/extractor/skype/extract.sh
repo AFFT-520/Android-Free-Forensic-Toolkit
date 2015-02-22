@@ -1,6 +1,6 @@
 #!/bin/bash
 
-skypeDir=$1/mount/userdata/data/com.skype.raider/
+skypeDir=$2/data/com.skype.raider/
 ourDir=$(pwd)
 find $skypeDir -name "main.db" | while read db; do	#Finds every instance of 'main.db' in the Skype folder; these have the data we need
 goto=$(echo $db | sed 's/main.db//')
