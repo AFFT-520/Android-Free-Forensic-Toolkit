@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+
+import maketable
+
+maketable.makereport(/home/conor/afft-cases/example-phoneoriginal/, True)

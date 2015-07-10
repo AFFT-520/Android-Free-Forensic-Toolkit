@@ -1,16 +1,19 @@
 #!/bin/bash
 
-cat $1/mount/mountinfo | while read line;
+loopnum=`kpartx -vrag $1/image/image.dd -p afft | grep -o -m 1 "/dev/loop." | sed 's/\/dev\/loop//g'`
+echo $loopnum
+loopsearch="loop${loopnum}afft*"
+echo $loopsearch
+find /dev/mapper/ -name "$loopsearch" | while read -r line;
 do
-offset=$(echo $line | awk '{print $1}')
-name=$(echo $line | awk '{print $2}')
-offset=$(($offset*512))
-mkdir $1/mount/$name
-currentCount=$(sudo losetup -a | wc -l)
-sudo losetup /dev/loop$currentCount $1/image/image.dd -r -o $offset
-sudo mount /dev/loop$currentCount $1/mount/$name
-if [ ! $? == 0 ]; then
-rm -rf $1/mount/$name
-sudo losetup -d /dev/loop$currentCount
+echo $line    
+foldername=$(echo $line | sed "s/\/dev\/mapper\///" | sed "s/loop${loopnum}afft/Partition\ /")
+mkdir $1/mount/"$foldername"
+mount $line $1/mount/"$foldername" -o ro,noexec,loop,noload
+if [ $? -ne 0 ];
+then
+	rm -rf $1/mount/"$foldername"
 fi
+echo $loopnum > $1/mount/loopnum
 done
+rm -rf $1/mount/loop$loopnum

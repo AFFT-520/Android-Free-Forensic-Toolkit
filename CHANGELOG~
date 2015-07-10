@@ -1,0 +1,11 @@
+ afft (0.02-1) UNRELEASED; urgency=low
+
+  * AFFT now detects the OS it is run on, and changes it's available options appropriately
+  * Importing of image files acquired through other means is now supported.
+  * Extracting data from Google Maps, Google Calendar API and AOSP Email are now supported
+  * AFFT can now break screenlocks; be aware this is a last-resort tool
+  * The AFFT case file structure is no longer limited to the home directory, and is now user-configurable. Great for Live-CD use.
+  * AFFT now asks for root access upfront
+  * Extraction on Windows and OSX is now possible with the help of third party mounting tools.
+
+ -- Conor Rynne <conor.rynne62@gmail.com>  Sun, 22 Feb 2015 03:48:41 +0000

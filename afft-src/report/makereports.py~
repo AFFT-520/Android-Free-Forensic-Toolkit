@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+
+import os
+import report.contacts.maketable
+import report.calendar.maketable
+import report.google_maps.maketable
+import report.facebook.maketable
+import report.sms.maketable
+import report.facebook_messenger.maketable
+import report.call_log.maketable
+import report.accounts.maketable
+import report.whatsapp.maketable
+import report.system.maketable
+def makereports(case):
+	userdatadir = getuserdatapath(case)
+	print(" ---- GENERATING REPORTS ---- \n\n")
+	if os.path.exists(os.path.join(case, "image", "deviceproperties.db")):
+		print ("--> Device Information\n") 
+		outdir = os.path.join(case, "reports", "system")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.system.maketable.makereport(case)
+	if os.path.exists(os.path.join(userdatadir, "system", "users")):
+		print ("--> System Accounts\n") 
+		outdir = os.path.join(case, "reports", "accounts")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.accounts.maketable.makereport(case)
+
+	if os.path.exists(os.path.join(userdatadir, "data", "com.android.providers.contacts")):
+		print ("--> Call Log\n")
+		outdir = os.path.join(case, "reports", "call-log")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.call_log.maketable.makereport(case)
+		print("--> Contacts\n")
+		outdir = os.path.join(case, "reports", "contacts")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.contacts.maketable.makereport(case)
+
+	if os.path.exists(os.path.join(userdatadir, "data", "com.android.providers.calendar")):
+		print ("--> Calendar\n")
+		outdir = os.path.join(case, "reports", "calendar")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.calendar.maketable.makereport(case)
+
+	if os.path.exists(os.path.join(userdatadir, "data", "com.google.android.gm")):	
+		print("--> Google Maps\n")
+		outdir = os.path.join(case, "reports", "google-maps")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.google_maps.maketable.makereport(case)
+
+	if os.path.exists(os.path.join(userdatadir, "data", "com.android.providers.telephony")):
+		print("--> SMS messages\n")
+		outdir = os.path.join(case, "reports", "mms-sms")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.sms.maketable.makereport(case)
+	if os.path.exists(os.path.join(userdatadir, "data", "com.facebook.katana")):
+		print("--> Facebook Messenger\n")
+		outdir = os.path.join(case, "reports", "facebook-messenger")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.facebook_messenger.maketable.makereport(case)
+	if os.path.exists(os.path.join(userdatadir, "data", "com.facebook.orca")):
+		print("--> Facebook\n")
+		outdir = os.path.join(case, "reports", "facebook")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.facebook.maketable.makereport(case)
+	if os.path.exists(os.path.join(userdatadir, "data", "com.whatsapp")):
+		print("--> WhatsApp\n")
+		outdir = os.path.join(case, "reports", "whatsapp")
+		if not os.path.exists(outdir):
+			os.makedirs(outdir)
+		report.whatsapp.maketable.makereport(case)
+def makeindex(case):
+	reportdir = os.path.join(case, "reports")
+	if not os.path.exists(reportdir):
+		os.makedirs(reportdir)	
+	indexlocation = os.path.join(case, "reports", "navlist")
+	index = open(indexlocation, "w")
+	datadir = os.path.join(case, "extracted data")	
+	for item in os.listdir(datadir):
+		if os.path.isdir(os.path.join(datadir, item)):
+			link = "<TR><TD><a href=\"../" + item + "/report.html\">" + item + "</a> </TD></TR>\n"
+			index.write(link)
+
+def getuserdatapath(case):
+	filepath = os.path.join(case, "image", "userdata-name.txt")
+	try:
+		fileopen = open(filepath, "r")
+	except FileNotFoundError:
+		writeuserdata(filepath, case)
+		fileopen = open(filepath, "r")
+	userdata = fileopen.read()
+	if userdata == '':
+		fileopen.close()
+		writeuserdata(filepath, case)
+	return(userdata)
