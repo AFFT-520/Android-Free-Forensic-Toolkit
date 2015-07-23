@@ -1,0 +1,4 @@
+xcopy ..\..\src\ .\build /q /i
+copy ..\installer.cfg .\build\installer.cfg
+copy .\afft.ico .\build\afft.cio
+python -m nsist installer.cfg
