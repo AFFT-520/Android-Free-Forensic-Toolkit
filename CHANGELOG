@@ -1,11 +1,9 @@
- afft (0.02-1) UNRELEASED; urgency=low
+Android Free Forensic Toolkit - Alpha 3
 
-  * AFFT now detects the OS it is run on, and changes it's available options appropriately
-  * Importing of image files acquired through other means is now supported.
-  * Extracting data from Google Maps, Google Calendar API and AOSP Email is now supported
-  * AFFT can now break screenlocks; be aware this is a last-resort tool
-  * The AFFT case file structure is no longer limited to the home directory, and is now user-configurable. Great for Live-CD use.
-  * AFFT now asks for root access upfront
-  * Extraction on Windows and OSX is now possible with the help of third party mounting tools.
-
- -- Conor Rynne <conor.rynne62@gmail.com>  Sun, 22 Feb 2015 03:48:41 +0000
+	* Complete rewrite of the program into Python
+	* This means the application is now truly cross-platform
+	* Added reporting mechanisms. The output for these is HTML
+	* Added a timeline mechanism that charts the global events on the phone into a timeline (this is relatively incomplete)
+	* Added a packaging mechanism for Windows
+	* Use of AFFT now requires root privileges; it will not run without them
+	
