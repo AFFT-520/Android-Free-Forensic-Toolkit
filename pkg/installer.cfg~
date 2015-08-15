@@ -1,0 +1,18 @@
+[Application]
+name=Android Free Forensic Toolkit Alpha
+version=3
+# How to launch the app - this calls the 'main' function from the 'myapp' package:
+entry_point=afft:main
+icon=afft.ico
+console=true
+
+[Python]
+version=3.4.0
+
+[Include]
+packages=afft
+	sethome
+	legalprompt
+	
+files=imaging/
+	mounter/

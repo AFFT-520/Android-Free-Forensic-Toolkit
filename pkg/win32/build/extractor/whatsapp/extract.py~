@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+import sys, os, shutil, apsw
+
+
+def extract (case, userdata):
+	if os.path.exists(os.path.join(userdata, "data", "com.whatsapp")):
+		extractdir = os.path.join(case, "extracted data")
+		if not os.path.exists(extractdir):
+			os.makedirs(extractdir)
+		extractdir = os.path.join(extractdir, "whatsapp")
+		if not os.path.exists(extractdir):
+			os.makedirs(extractdir)
+
+		dbsource = os.path.join(userdata, "data", "com.whatsapp", "databases", "msgstore.db")
+		dbdest = os.path.join(case, "extracted data", "whatsapp", "msgstore.db")
+		
+		shutil.copyfile(dbsource, dbdest)
+
+		
+		print("--> Extracting WhatsApp data\n\n")
+		txtoutput = os.path.join(case, "extracted data", "whatsapp", "messages.txt")
+		txtoutfile = open(txtoutput, 'w', encoding='utf8')
+		sqlconnection = apsw.Connection(dbdest)
+		sqlshell = apsw.Shell(stdout=txtoutfile, db=sqlconnection)
+		sqlshell.process_command('.header on')
+		sqlshell.process_sql('select * from messages')
+		txtoutfile.close()
+
+	else:
+		print("--> Not extracting WhatsApp data. Reason: Not found\n\n")
+	
+

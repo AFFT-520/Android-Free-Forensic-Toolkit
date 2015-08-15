@@ -1,0 +1,157 @@
+#!/usr/bin/env python
+
+import os, re, shutil, sys, pdb, apsw, io, time
+import extractor.mms_sms.extract, extractor.call_log.extract, extractor.contacts.extract, extractor.accounts.extract, extractor.aosp_email.extract, extractor.google_calendar.extract, extractor.facebook.extract, extractor.facebook_messenger.extract, extractor.gmail.extract, extractor.google_maps.extract, extractor.skype.extract, extractor.system.extract, extractor.whatsapp.extract, extractor.tinder.extract
+import report.makereports
+import mounter.mount
+def main(case):
+	os.system('cls' if os.name == 'nt' else 'clear')
+	reportoption = selectreport()
+	if sys.platform in ('linux', 'linux2'):
+		mountcheck = os.path.join(case, "mount", "mountstatus")
+		mstatusfile = open (mountcheck, 'r')
+		mstatusread = mstatusfile.read()
+		mstatusread = int(mstatusread)
+		mstatbool = False
+		if mstatusread == 1:
+			mstatbool = True
+		mstatusfile.close()
+		if mstatbool == False:
+			print('Image does not appear to be mounted. Mounting image (forensically safe)...')
+			mounter.mount.mountfs(case)
+	userdatadir = getuserdatapath(case)
+	extractdir = os.path.join(case, "extracted data")
+	timeline = False
+	if reportoption == 1:
+		timeline = askfortimeline(case)
+	try:
+		if os.path.exists(extractdir):
+			shutil.rmtree(extractdir)
+			os.makedirs(extractdir)
+		if os.path.exists(os.path.join(userdatadir, "system", "users")):
+			extractor.accounts.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.android.email")):
+			extractor.aosp_email.extract.extract(case, userdatadir)	
+		if os.path.exists(os.path.join(userdatadir, "data", "com.android.providers.contacts")):
+			extractor.call_log.extract.extract(case, userdatadir)
+			extractor.contacts.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.facebook.katana")):
+			extractor.facebook.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.facebook.orca")):
+			extractor.facebook_messenger.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.google.android.gm")):
+			extractor.gmail.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.android.providers.calendar")):
+			extractor.google_calendar.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.google.android.apps.maps")):
+			extractor.google_maps.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.android.providers.telephony")):
+			extractor.mms_sms.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.skype.raider")):
+			extractor.skype.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "misc")):
+			extractor.system.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.whatsapp")):
+			extractor.whatsapp.extract.extract(case, userdatadir)
+		if os.path.exists(os.path.join(userdatadir, "data", "com.tinder")):
+			extractor.tinder.extract.extract(case, userdatadir)
+		if sys.platform in ('linux', 'linux2'):
+			print("--> [Linux] Fixing permissions for easy, non-root access")
+			os.system('chown -R $USER "' + extractdir + '"')
+			os.system('chmod -R 777 "' + extractdir + '"')
+		if reportoption == 1:
+			report.makereports.makeindex(case, timeline)
+			report.makereports.makereports(case, timeline)
+	except PermissionError:
+		if os.name == 'nt':
+			print("Error! This needs to be run with Administrator privileges. Press Enter to return to the menu.")
+		else:
+			print("Error! This needs to be run under 'sudo' or as root. Press Enter to return to the menu.")
+		input()
+	except KeyboardInterrupt:
+		print("CTRL-C (cancel command) registered. Performing cleanup")
+		shutil.rmtree(extractdir)
+		shutil.rmtree(os.path.join(case, "reports"))
+		os.makedirs(extractdir)
+		os.makedirs(os.path.join(case, "reports"))
+		time.sleep(5)
+	
+	
+
+
+def getuserdatapath(case):
+	filepath = os.path.join(case, "image", "userdata-name.txt")
+	try:
+		fileopen = open(filepath, "r")
+	except FileNotFoundError:
+		writeuserdata(filepath, case)
+		fileopen = open(filepath, "r")
+	userdata = fileopen.read()
+	if userdata == '':
+		fileopen.close()
+		writeuserdata(filepath, case)
+	return(userdata)
+
+def writeuserdata(filepath, case):
+		if sys.platform in ('linux', 'linux2'):
+				print ("The userdata partition number is unknown. Please type in the partition number (you can find the selectable numbers in " + case + "mount, assuming you mounted the partitions before making a report)")
+				path = ''
+				while not os.path.isdir(path):
+						partnumber = input("Partition number [0-99]")
+						path = os.path.join(case, "mount", "Partition " + partnumber)
+						path = path + os.sep
+						if not os.path.isdir(path):
+								print("Error! chould not find partition " + partnumber)
+
+		else:
+			print ("The path for the mounted userdata partition was not found. Please type in (or drag-and-drop) the full path to the root of the mounted userdata partition\n\n")
+			path = ''
+			while not os.path.isdir(path):
+						path = input("[userdata partition path]")
+						path = path.replace("'","")
+						path = re.sub(" $", "", path)
+						path = path + os.sep
+						if not os.path.isdir(path):
+								print("Error! " + path +" is not a valid directory")
+		fileopen = open(filepath, "w")
+		fileopen.write(path)
+		fileopen.close
+
+
+def selectreport():
+	reportoption = 2
+	while reportoption == 2:
+		os.system('cls' if os.name == 'nt' else 'clear')
+		print("AFFT can make automated HTML reports based on the findings. This will analyse and present the data in a user-friendly format, but will make the extraction process significantly longer.")
+		print("\nMake automated reports?")
+		option = input("[Y/N]")
+		option = option.lower()
+		if option == 'y' or option == 'yes':
+			reportoption = 1
+		elif option == 'n' or option == 'no':
+			reportoption = 0
+	return reportoption
+	
+
+def askfortimeline(case):
+	print("Create a timeline of all supported events? (Takes significantly longer)")
+	answer = input('[Y/N]')
+	answer = answer.upper()
+	if answer == 'Y':
+		if not os.path.exists(os.path.join(case, "reports")):
+			os.makedirs(os.path.join(case, "reports"))
+		if not os.path.exists(os.path.join(case, "reports", "timeline")):
+			os.makedirs(os.path.join(case, "reports", "timeline"))
+		tldb = os.path.join(case, "reports", "timeline.db")
+		if os.path.isfile(tldb):
+			os.remove(tldb)
+		tloutopen = io.StringIO()
+		tlconnection = apsw.Connection(tldb)
+		dbshell = apsw.Shell(stdout=tloutopen, db=tlconnection)
+		dbshell.process_sql("CREATE TABLE timeline(_id INTEGER PRIMARY KEY NOT NULL, service, message, timestamp)")
+		return(True)
+	elif answer == 'N':
+		return(False)
+	else:
+		print("Unrecognised answer. Defaulting to 'N'")
+		return(False)

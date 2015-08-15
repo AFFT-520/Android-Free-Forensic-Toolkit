@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+
+import _calendar.maketable
+
+_calendar.maketable.makereport("/home/conor/afft-cases/example-phoneoriginal/", True)
