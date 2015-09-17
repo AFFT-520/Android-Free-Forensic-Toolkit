@@ -2,9 +2,10 @@
 
 import os, ctypes, sethome, sys, legalprompt, imaging.source, mounter.mount, lockscreen.lockscreen, extractor.extractor
 
+
 def getuserdatapartition(caselocation):
 	userdata = input("Please provide the full path to the root of the mounted user data partition (usually called 'userdata')")
-	settingslocation= os.path.join(location, "image", "userdata-name.txt")
+	settingslocation= os.path.join(caselocation, "image", "userdata-name.txt")
 	settfile = open(settingslocation,'w')
 	settfile.write(userdata + "\n")
 	settfile.truncate()
@@ -154,12 +155,14 @@ def checkroot():
 	if sys.platform == 'win32':
 		isRoot = ctypes.windll.shell32.IsUserAnAdmin() != 0
 		if isRoot == False:
-			print('ERROR! Insufficient privileges to run this tool. Please run this tools as a Local Administrator')
+			print('ERROR! Insufficient privileges to run this tool. Please run this tools as a Local Administrator (Right click the program and click \'Run as Administrator\')')
+			input('Press Enter to exit')
 			exit(1)
 	else:
 		isRoot = os.access('/', os.W_OK)
 		if isRoot == False:
 			print('ERROR! Insufficient privileges to run this tool. Please run this tool as root or use \'sudo\'')
+			input('Press Enter to exit')
 			exit(1)
 
 
@@ -175,7 +178,7 @@ def intro ():
 		menulinux(case)
 	elif sys.platform == 'win32':
 		windows(case)
-	elif sys.plaform == 'darwin':
+	elif sys.platform == 'darwin':
 		mac(case)
 legalprompt.main()
 casehome = sethome.main()
