@@ -2,7 +2,6 @@
 
 import os, shutil, apsw, distutils.dir_util, sys, re
 
-
 def extract(case, userdata):
 	print( "--> Extracting GMail data\n\n")
 	extractdir = os.path.join(case, "extracted data")

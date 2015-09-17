@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 import sys, os, shutil, binascii, apsw, zlib
-
 from Crypto.Cipher import AES
-
 
 def extract (case, userdata):
 	if os.path.exists(os.path.join(userdata, "data", "com.whatsapp")):

@@ -2,7 +2,6 @@
 
 import os, shutil, apsw
 
-
 def extract(case, userdata):
 	print("--> Extracting contacts database\n\n")
 	if os.path.exists(os.path.join(userdata, "data", "com.android.providers.contacts", "databases", "contacts2.db")):

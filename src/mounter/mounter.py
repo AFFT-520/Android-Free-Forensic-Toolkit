@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-import sys, os, subprocess, re, time
-
+import sys, os, subprocess, re, pdb
 
 def mount(case):
 	if not os.path.isfile(case + '/image/image.dd'):
@@ -28,7 +27,6 @@ def mount(case):
 		loopadd=match.group(0)
 		loopid=loopadd.replace("/dev/","")
 		loopnum=loopid.replace("loop","")
-		time.sleep(5)
 		for file in os.listdir("/dev/mapper"):
 			if file.startswith(loopid):
 				partnum = file.replace("loop" + loopnum + "afft","")
@@ -41,11 +39,7 @@ def mount(case):
 					mountoutput=str(mountoutput)
 					if re.search("wrong fs type", mountoutput):
 						os.rmdir(partdir)
-		mountedstatus = os.path.join(case, "mount", "mountstatus")
-		mstatusfile = open(mountedstatus, "w")
-		mstatusfile.write("1")
-		mstatusfile.close()
-		loopidfile = os.path.join(case, "mount", "loopnum")
-		loopidwrite = open(loopidfile, "w")
-		loopidwrite.write(loopid)
-		loopidwrite.close()
+	mountedstatus = os.path.join(case, "mount", "mountstatus")
+	mstatusfile = open(mountedstatus, "w")
+	mstatusfile.write("1")
+	mstatusfile.close()

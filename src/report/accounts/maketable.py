@@ -2,7 +2,6 @@
 
 import apsw, getopt, os, io, sys, shutil, re, time, report.makecss, report.makehtml
 
-
 def makereport(case):
 	csslocation = os.path.join(case, "reports", "accounts", "report.css")
 	reportfilelocation = os.path.join(case, "reports", "accounts", "report.html")

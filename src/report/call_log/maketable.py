@@ -2,7 +2,6 @@
 
 import apsw, getopt, os, io, sys, shutil, re, time, report.makehtml, pdb
 
-
 def makereport(case, timeline):
 	csslocation = os.path.join(case, "reports", "call-log", "report.css")
 	reportlocation = os.path.join(case, "reports", "call-log", "report.html")

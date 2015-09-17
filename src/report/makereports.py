@@ -1,22 +1,19 @@
 #!/usr/bin/env python
 
 import os
-
-import report.accounts.maketable
-import report.calendar.maketable
-import report.call_log.maketable
 import report.contacts.maketable
-import report.facebook.maketable
-import report.facebook_messenger.maketable
-import report.gmail.maketable
+import report.calendar.maketable
 import report.google_maps.maketable
+import report.facebook.maketable
 import report.sms.maketable
-import report.system.maketable
-import report.timeline.maketable
-import report.tinder.maketable
+import report.facebook_messenger.maketable
+import report.call_log.maketable
+import report.accounts.maketable
 import report.whatsapp.maketable
-
-
+import report.system.maketable
+import report.gmail.maketable
+import report.tinder.maketable
+import report.timeline.maketable
 def makereports(case, timeline):
 	userdatadir = getuserdatapath(case)
 	print(" ---- GENERATING REPORTS ---- \n\n")

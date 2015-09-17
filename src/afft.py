@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 
-import os, ctypes, sethome, sys, legalprompt, imaging.source, mounter.mount, lockscreen.lockscreen, extractor.extractor
+import os, ctypes, sethome, sys, legalprompt, imaging.step1, mounter.mount, lockscreen.lockscreen, extractor.extractor
 
-
-def getuserdatapartition(caselocation): # Prompts the user for the location of the mounted disk. Saves this for future reference in [case]/image/username.txt
+def getuserdatapartition(caselocation):
 	userdata = input("Please provide the full path to the root of the mounted user data partition (usually called 'userdata')")
-	settingslocation= os.path.join(caselocation, "image", "userdata-name.txt")
+	settingslocation= os.path.join(location, "image", "userdata-name.txt")
 	settfile = open(settingslocation,'w')
 	settfile.write(userdata + "\n")
 	settfile.truncate()
 	settfile.close
 	
 	
-def mac (case): # Notifies an OSX user of the limitations of this program when running under Mac OSX and asks how they would like to proceed. Gives a specialised menu with these limitations and choice in mind. Called only when the program is running under OSX.
+def mac (case):
 	os.system('cls' if os.name == 'nt' else 'clear')
 	print("NOTICE FOR MAC OSX USERS\n")
 	print("-------------------------\n\n")
@@ -29,7 +28,7 @@ def mac (case): # Notifies an OSX user of the limitations of this program when r
 		menuotherosnoextract(case)
 	else:
 		mac(case)
-def windows (case): # Notifies a Windows user of the programs limitations when not running under Linux, similar to the 'mac' function above. Called only when the program is running under Windows.
+def windows (case):
 	os.system('cls' if os.name == 'nt' else 'clear')
 	print("NOTICE FOR WINDOWS USERS\n")
 	print("-------------------------\n\n")
@@ -47,7 +46,7 @@ def windows (case): # Notifies a Windows user of the programs limitations when n
 	else:
 		windows(case)
 
-def menulinux (case): #Brings up the main menu under Linux
+def menulinux (case):
 	os.system('cls' if os.name == 'nt' else 'clear')
 	print("Android Free Forensic Toolkit - Alpha Build - (C) Conor Rynne)")
 	print("-----------------------------------------------\n")
@@ -67,30 +66,30 @@ def menulinux (case): #Brings up the main menu under Linux
 		if not os.path.exists(imagedir):
 			os.makedirs(imagedir)
 		os.system('cls' if os.name == 'nt' else 'clear')
-		imaging.step1.main(case)#Runs the imaging scripts.
+		imaging.step1.main(case)
 		menulinux (case)
 	elif option == "2":
 		mounter.mount.mountfs(case)
-		menulinux(case) #Mounts the device image found in [case]/image/image.dd to [case]/mount/Partition X (where X represents the number of individual partitions on the image)
+		menulinux(case)
 	elif option == "3":
 		extractor.extractor.main(case)
-		menulinux(case) #Runs the extractor tool on mounted images
+		menulinux(case)
 	elif option == "4":
 		mounter.mount.unmountfs(case)
-		menulinux(case) #Unmounts the device image and delete's the mountpoints
+		menulinux(case)
 	elif option == "5":
-		mounter.mount.repair(case) #Mounts an image in a forensically unsafe way to allow filesystem fixes, then quickly unmounts. USE AS A LAST RESORT
+		mounter.mount.repair(case)
 		menulinux(case)
 	elif option == "6":
-		lockscreen.lockscreen.breakpassword() #Bypasses the lockscreen of an Android device. WARNING: This alters the settings of the Android device, therefore it may possibly damage evidence.
+		lockscreen.lockscreen.breakpassword()
 		menulinux(case)
 	elif option == "7":
 		sys.exit(0)
 	else:
 		menulinux(case)
 
-def menuotheros (case): # Brings up the main menu seen when run from other Operating Systems other than Linux-based ones. Seen only when the user is not running the tool under Linux and decides to use a third party tool to handle image mounting.
-	os.system('cls' if os.name == 'nt' else 'clear')
+def menuotheros (case):
+	#os.system('cls' if os.name == 'nt' else 'clear')
 	print("Android Free Forensic Toolkit - Alpha Build - (C) Conor Rynne)")
 	print("-----------------------------------------------\n")
 	print("The casefiles can be found in " + case + os.path.sep + "\n")
@@ -106,8 +105,10 @@ def menuotheros (case): # Brings up the main menu seen when run from other Opera
 		if not os.path.exists(imagedir):
 			os.makedirs(imagedir)
 		os.system('cls' if os.name == 'nt' else 'clear')
-		if os.name == 'nt':  #If in Windows, loads the Windows version of the imaging script (which is drastically different in code, if not in function). If in OSX, use the same imaging scripts as Linux
-			imaging.step1win.main(case) 
+		if os.name == 'nt':
+			cwd = os.path.dirname(os.path.realpath(__file__))
+			script = os.path.join(cwd, "imaging", "step1win.py")
+			os.system(script + " -c " + case)
 		else:
 			imaging.step1.main(case)
 		menuotheros (case)
@@ -115,14 +116,14 @@ def menuotheros (case): # Brings up the main menu seen when run from other Opera
 		extractor.extractor.main(case)
 		menuotheros(case)
 	elif option == "3":
-		lockscreen.lockscreen.breakpassword() #Loads the lockscreen bypass tool
+		lockscreen.lockscreen.breakpassword()
 		menuotheros(case)
 	elif option == "4":
 		sys.exit(0)
 	else:
 		menuotheros(case)
 
-def menuotherosnoextract (case): #Brings up the main menu seen when run from other Operating Systems other than Linux-based ones. Seen when the user decides against using a third party tool to handle image mounting (which means file system examinations cannot be done)
+def menuotherosnoextract (case):
 	os.system('cls' if os.name == 'nt' else 'clear')
 	print("Android Free Forensic Toolkit - Alpha Build - (C) Conor Rynne)")
 	print("-----------------------------------------------\n")
@@ -139,30 +140,30 @@ def menuotherosnoextract (case): #Brings up the main menu seen when run from oth
 			os.makedirs(imagedir)
 		os.system('cls' if os.name == 'nt' else 'clear')
 		if os.name == 'nt':
-			imaging.step1win.main(case)
+			cwd = os.path.dirname(os.path.realpath(__file__))
+			script = os.path.join(cwd, "imaging", "step1win.py")
+			os.system(script + " -c " + case)
 		else:
-			imaging.step1.main(case) #If in Windows, loads the Windows version of the imaging script. If in OSX, use the same imaging scripts as Linux
+			imaging.step1.main(case)
 		menuotherosnoextract (case)
 	elif option == "2":
 		lockscreen.lockscreen.breakpassword()
-		menuotherosnoextract(case) 
+		menuotherosnoextract(case)
 	elif option == "3":
 		sys.exit(0)
 	else:
 		menuotherosnoextract(case)
 		
-def checkroot(): #Checks for root/admin access on Windows or UNIX-Like machines. If root/admin access is not found, it will display an error message saying that said privileges are required for the program to function effectively (May not be as true on Windows, considering altering this function to reflect that) and then exits. Waits for user's input to ensure the message is read.
+def checkroot():
 	if sys.platform == 'win32':
-		isRoot = ctypes.windll.shell32.IsUserAnAdmin() != 0 #This is the Windows admin check condition 
+		isRoot = ctypes.windll.shell32.IsUserAnAdmin() != 0
 		if isRoot == False:
-			print('ERROR! Insufficient privileges to run this tool. Please run this tools as a Local Administrator (Right click the program and click \'Run as Administrator\')') # This is the error message non-admin Windows users see upon running the program
-			input('Press Enter to exit') # This waits for the user to press enter before closing, allowing time to read the file and preventing the program from closing immediately
+			print('ERROR! Insufficient privileges to run this tool. Please run this tools as a Local Administrator')
 			exit(1)
 	else:
-		isRoot = os.access('/', os.W_OK) # This is the UNIX-like root check. This works by testing the access to the root filesystem.
+		isRoot = os.access('/', os.W_OK)
 		if isRoot == False:
-			print('ERROR! Insufficient privileges to run this tool. Please run this tool as root or use \'sudo\'') # # This is the error message non-root users of UNIX-like OSes see upon running the program (without running 'sudo')
-			input('Press Enter to exit') # Waits for the user to press enter before quitting, ensuring instances not initiated via terminal still give the user ample time to read the error.
+			print('ERROR! Insufficient privileges to run this tool. Please run this tool as root or use \'sudo\'')
 			exit(1)
 
 
@@ -170,17 +171,17 @@ def intro ():
 	checkroot()
 	os.system('cls' if os.name == 'nt' else 'clear')
 	print("Please provide the directory name for the case items")
-	phonecase = input() #Gets the name for the active case
-	case = os.path.join(casehome, "afft-cases", phonecase) #The directory of the active case
+	phonecase = input()
+	case = os.path.join(casehome, "afft-cases", phonecase) 
 	if not os.path.exists(case):
-		os.makedirs(case)# If the case directory doesnt exist, make it.
-	if sys.platform in ('linux', 'linux2'): # If run in Linux, load the main menu.
+		os.makedirs(case)
+	if sys.platform in ('linux', 'linux2'):
 		menulinux(case)
-	elif sys.platform == 'win32': # If running on Windows, inform user of limitations vs Linux version and load appropriate menu
+	elif sys.platform == 'win32':
 		windows(case)
-	elif sys.platform == 'darwin': # If running on Mac OSX, inform user of limitations vs Linux version and load appropriate menu
+	elif sys.plaform == 'darwin':
 		mac(case)
-legalprompt.main() #Displays legal waivers if it detects that it has not been agreed to yet
-casehome = sethome.main() # Gets the location of the case directory from the settings file
+legalprompt.main()
+casehome = sethome.main()
 intro()
 

@@ -2,6 +2,7 @@
 
 import os, sys, getopt, time, apsw, re, report.makehtml
 
+	
 
 def maketable(reportfile, case):
 	reportfiledb = os.path.join(case, "extracted data", "facebook", "db", "threads_db2")

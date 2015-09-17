@@ -2,7 +2,6 @@
 
 import requests, base64
 
-
 url = 'https://192.168.56.102/index.php'
 toupload=open('./testupload.db', 'rb')
 content=toupload.read()

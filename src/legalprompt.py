@@ -2,7 +2,6 @@
 
 import os, fileinput, sys
 
-
 def legalprompt ():
     os.system('cls' if os.name == 'nt' else 'clear')
     print("LEGAL DISCLAIMER\n\n")

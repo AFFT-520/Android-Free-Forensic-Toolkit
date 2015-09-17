@@ -2,7 +2,6 @@
 
 import os, apsw, subprocess, shutil
 
-
 def makedb(case):
 	print(' --> Creating device information database')
 	cwd = os.path.dirname(os.path.realpath(__file__))
@@ -14,6 +13,7 @@ def makedb(case):
 	dbcur1.execute('CREATE TABLE settings(key PRIMARY KEY, value)')
 	if os.name == 'nt':
 		adb = os.path.join(cwd, '..', 'bin', 'adb.exe')
+		adb = '"' + adb + '"'
 
 	if os.name == 'nt':
 		detail_list = subprocess.Popen(adb + ' shell getprop', shell=True, stdout=subprocess.PIPE).stdout.read()
@@ -37,7 +37,10 @@ def makedb(case):
 		linestr = str(detail_list_lines[linecount])
 		linesplit = linestr.split(':')
 		key = linesplit[0]
-		value = linesplit[1]
+		if len(linesplit) > 1:
+			value = linesplit[1]
+		else:
+			value = 'NULL'
 		dbcur1.execute("INSERT INTO settings(key, value) VALUES('" + key + "', '" + value + "')")
 		linecount = linecount + 1
 	

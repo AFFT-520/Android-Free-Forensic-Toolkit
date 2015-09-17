@@ -2,7 +2,6 @@
 
 import os, distutils.dir_util, apsw, shutil
 
-
 def extract(case, userdata):
 
 	extractdir = os.path.join(case, "extracted data")
