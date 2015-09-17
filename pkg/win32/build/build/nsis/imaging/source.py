@@ -2,6 +2,9 @@
 
 import os, sys, imaging.step1
 
+###This file has since been deprecated###
+
+
 def picksource(casefolder):
 	cwd = os.path.dirname(os.path.realpath(__file__))
 	os.system('cls' if os.name == 'nt' else 'clear')

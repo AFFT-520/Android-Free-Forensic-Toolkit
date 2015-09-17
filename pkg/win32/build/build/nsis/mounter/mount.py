@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys, os, mounter.mounter
 
+
 def mountfs(case):
 	if sys.platform in ('linux', 'linux2'):
 		mounter.mounter.mount(case)

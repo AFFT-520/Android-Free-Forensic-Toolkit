@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, ctypes, sethome, sys, legalprompt, imaging.source, mounter.mount, lockscreen.lockscreen, extractor.extractor
+import os, ctypes, sethome, sys, legalprompt, imaging.step1, mounter.mount, lockscreen.lockscreen, extractor.extractor
 
 def getuserdatapartition(caselocation):
 	userdata = input("Please provide the full path to the root of the mounted user data partition (usually called 'userdata')")
@@ -106,7 +106,9 @@ def menuotheros (case):
 			os.makedirs(imagedir)
 		os.system('cls' if os.name == 'nt' else 'clear')
 		if os.name == 'nt':
-			imaging.step1win.main(case)
+			cwd = os.path.dirname(os.path.realpath(__file__))
+			script = os.path.join(cwd, "step1win.py")
+			os.system(script + " -c " + casefolder))
 		else:
 			imaging.step1.main(case)
 		menuotheros (case)
@@ -138,7 +140,9 @@ def menuotherosnoextract (case):
 			os.makedirs(imagedir)
 		os.system('cls' if os.name == 'nt' else 'clear')
 		if os.name == 'nt':
-			imaging.step1win.main(case)
+			cwd = os.path.dirname(os.path.realpath(__file__))
+			script = os.path.join(cwd, "step1win.py")
+			os.system(script + " -c " + casefolder)
 		else:
 			imaging.step1.main(case)
 		menuotherosnoextract (case)

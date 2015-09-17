@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import apsw, getopt, os, io, sys, shutil, re, time, report.makecss, report.makehtml, datetime
 from dateutil import tz
+
+import apsw, getopt, os, io, sys, shutil, re, time, report.makecss, report.makehtml, datetime
+
 
 def makereport(case, timeline):
 	csslocation = os.path.join(case, "reports", "calendar", "report.css")

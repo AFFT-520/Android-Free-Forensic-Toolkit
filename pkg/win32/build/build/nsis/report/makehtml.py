@@ -2,6 +2,7 @@
 
 import time, os
 
+
 def makehead(reportfile, name):
 	reportfile.write("<html>\n")
 	reportfile.write("<head>\n")

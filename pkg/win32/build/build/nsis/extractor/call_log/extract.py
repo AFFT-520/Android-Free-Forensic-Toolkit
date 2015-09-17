@@ -2,6 +2,7 @@
 
 import os, shutil, apsw, distutils.dir_util
 
+
 def extract(case, userdata):
 	print("--> Extracting call logs\n\n")
 	extractdir = os.path.join(case, "extracted data")

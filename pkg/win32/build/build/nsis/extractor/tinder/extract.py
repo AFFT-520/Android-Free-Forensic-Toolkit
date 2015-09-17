@@ -2,6 +2,7 @@
 
 import os, sys, shutil, apsw
 
+
 def extract(case, userdata):
 	extractdir = os.path.join(case, "extracted data")
 	if not os.path.exists(extractdir):

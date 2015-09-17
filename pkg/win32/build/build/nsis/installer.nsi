@@ -2,7 +2,6 @@
 !define PRODUCT_VERSION "3"
 !define PY_VERSION "3.4.0"
 !define PY_MAJOR_VERSION "3.4"
-!define PY_QUALIFIER "3.4-32"
 !define BITNESS "32"
 !define ARCH_TAG ""
 !define INSTALLER_NAME "Android_Free_Forensic_Toolkit_Alpha_3.exe"
@@ -19,7 +18,6 @@ RequestExecutionLevel admin
 
 ; UI pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -35,12 +33,25 @@ Section -SETTINGS
   SetOverwrite ifnewer
 SectionEnd
 
+
 Section "Python ${PY_VERSION}" sec_py
   File "python-${PY_VERSION}${ARCH_TAG}.msi"
   DetailPrint "Installing Python ${PY_MAJOR_VERSION}, ${BITNESS} bit"
   ExecWait 'msiexec /i "$INSTDIR\python-${PY_VERSION}${ARCH_TAG}.msi" \
             /qb ALLUSERS=1 TARGETDIR="$COMMONFILES${BITNESS}\Python\${PY_MAJOR_VERSION}"'
   Delete $INSTDIR\python-${PY_VERSION}${ARCH_TAG}.msi
+SectionEnd
+
+Section "dateutil" sec_du
+  DetailPrint "Downloading Dateutil Python Module"
+  ExecWait '""$COMMONFILES${BITNESS}\Python\${PY_MAJOR_VERSION}\Scripts\pip.exe" install python-dateutil'
+SectionEnd
+
+Section "APSW" sec_apsw
+  File "apsw32.exe"
+  DetailPrint "Installing APSW"
+  ExecWait '"$INSTDIR\apsw32.exe"'
+  Delete $INSTDIR\apsw32.exe
 SectionEnd
 
 Section "!${PRODUCT_NAME}" sec_app
@@ -53,20 +64,10 @@ Section "!${PRODUCT_NAME}" sec_app
   
   ; Install files
     SetOutPath "$INSTDIR"
-      File "Android_Free_Forensic_Toolkit_Alpha.launch.py"
       File "afft.ico"
+      File "Android_Free_Forensic_Toolkit_Alpha.launch.py"
   
   ; Install directories
-    SetOutPath "$INSTDIR\imaging"
-    File /r "imaging\*.*"
-    SetOutPath "$INSTDIR\mounter"
-    File /r "mounter\*.*"
-    SetOutPath "$INSTDIR\lockscreen"
-    File /r "lockscreen\*.*"
-    SetOutPath "$INSTDIR\extractor"
-    File /r "extractor\*.*"
-    SetOutPath "$INSTDIR\report"
-    File /r "report\*.*"
   
   ; Install shortcuts
   ; The output path becomes the working directory for shortcuts
@@ -77,7 +78,7 @@ Section "!${PRODUCT_NAME}" sec_app
   
   ; Byte-compile Python files.
   DetailPrint "Byte-compiling Python modules..."
-  nsExec::ExecToLog 'py -${PY_QUALIFIER} -m compileall -q "$INSTDIR\pkgs"'
+  nsExec::ExecToLog ' -m compileall -q "$INSTDIR\pkgs"'
   WriteUninstaller $INSTDIR\uninstall.exe
   ; Add ourselves to Add/remove programs
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" \
@@ -100,14 +101,9 @@ Section "Uninstall"
   Delete "$INSTDIR\${PRODUCT_ICON}"
   RMDir /r "$INSTDIR\pkgs"
   ; Uninstall files
-    Delete "$INSTDIR\Android_Free_Forensic_Toolkit_Alpha.launch.py"
     Delete "$INSTDIR\afft.ico"
+    Delete "$INSTDIR\Android_Free_Forensic_Toolkit_Alpha.launch.py"
   ; Uninstall directories
-    RMDir /r "$INSTDIR\imaging"
-    RMDir /r "$INSTDIR\mounter"
-    RMDir /r "$INSTDIR\lockscreen"
-    RMDir /r "$INSTDIR\extractor"
-    RMDir /r "$INSTDIR\report"
   ; Uninstall shortcuts
       Delete "$SMPROGRAMS\Android Free Forensic Toolkit Alpha.lnk"
   RMDir $INSTDIR
@@ -121,10 +117,6 @@ Function .onMouseOverSection
     ; Find which section the mouse is over, and set the corresponding description.
     FindWindow $R0 "#32770" "" $HWNDPARENT
     GetDlgItem $R0 $R0 1043 ; description item (must be added to the UI)
-
-    StrCmp $0 ${sec_py} 0 +2
-      SendMessage $R0 ${WM_SETTEXT} 0 "STR:The Python interpreter. \
-            This is required for ${PRODUCT_NAME} to run."
 
     StrCmp $0 ${sec_app} "" +2
       SendMessage $R0 ${WM_SETTEXT} 0 "STR:${PRODUCT_NAME}"
