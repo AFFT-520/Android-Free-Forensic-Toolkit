@@ -2,6 +2,7 @@
 
 import os, apsw, subprocess, shutil
 
+
 def makedb(case):
 	print(' --> Creating device information database')
 	cwd = os.path.dirname(os.path.realpath(__file__))

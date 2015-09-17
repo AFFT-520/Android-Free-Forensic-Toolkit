@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 
+
 def breakpassword ():
 	os.system('cls' if os.name == 'nt' else 'clear')
 	print("Connect the phone via USB, ensure Developer seetings are on and root is enabled. Press any key when ready")

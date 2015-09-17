@@ -2,6 +2,7 @@
 
 import os, distutils.dir_util, apsw, shutil
 
+
 def extract(case, userdata):
 	print("--> Extracting accounts info\n\n")
 	

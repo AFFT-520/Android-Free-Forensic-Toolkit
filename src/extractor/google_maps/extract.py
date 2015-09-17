@@ -2,6 +2,7 @@
 
 import os, shutil, apsw
 
+
 def extract(case, userdata):
 	print("--> Extracting Google Maps bookmarks\n\n")
 	if os.path.exists(os.path.join(userdata, "data", "com.google.android.apps.maps")):

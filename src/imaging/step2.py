@@ -2,6 +2,7 @@
 
 import os, time, sys
 
+
 def main(casefolder):
 	print("\n --> Imaging command sent\n")
 	print(" --> Giving device 10 seconds to process command\n")

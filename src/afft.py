@@ -3,7 +3,7 @@
 import os, ctypes, sethome, sys, legalprompt, imaging.source, mounter.mount, lockscreen.lockscreen, extractor.extractor
 
 
-def getuserdatapartition(caselocation):
+def getuserdatapartition(caselocation): # Prompts the user for the location of the mounted disk. Saves this for future reference in [case]/image/username.txt
 	userdata = input("Please provide the full path to the root of the mounted user data partition (usually called 'userdata')")
 	settingslocation= os.path.join(caselocation, "image", "userdata-name.txt")
 	settfile = open(settingslocation,'w')

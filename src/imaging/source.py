@@ -2,6 +2,7 @@
 
 import os, sys, imaging.step1
 
+
 def picksource(casefolder):
 	cwd = os.path.dirname(os.path.realpath(__file__))
 	os.system('cls' if os.name == 'nt' else 'clear')

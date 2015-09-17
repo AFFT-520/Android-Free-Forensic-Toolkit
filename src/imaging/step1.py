@@ -2,6 +2,7 @@
 
 import os, multiprocessing, imaging.step2, time, sys, imaging.getinfo, subprocess, re, pdb
 
+
 def main(casefolder):
     cwd = os.path.dirname(os.path.realpath(__file__))
     if os.name == 'nt':

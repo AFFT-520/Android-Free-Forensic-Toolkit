@@ -3,8 +3,6 @@
 import os, sys, getopt, time, apsw, re, report.makehtml, report.makecss
 
 
-	
-
 def maketable(reportfile, case):
 	reportfiledb = os.path.join(case, "extracted data", "facebook-messenger", "db", "threads_db2")
 	reportfile_connection=apsw.Connection(reportfiledb)

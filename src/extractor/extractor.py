@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
 import os, re, shutil, sys, pdb, apsw, io, time
+
 import extractor.mms_sms.extract, extractor.call_log.extract, extractor.contacts.extract, extractor.accounts.extract, extractor.aosp_email.extract, extractor.google_calendar.extract, extractor.facebook.extract, extractor.facebook_messenger.extract, extractor.gmail.extract, extractor.google_maps.extract, extractor.skype.extract, extractor.system.extract, extractor.whatsapp.extract, extractor.tinder.extract
-import report.makereports
 import mounter.mount
+import report.makereports
+
+
 def main(case):
 	os.system('cls' if os.name == 'nt' else 'clear')
 	reportoption = selectreport()

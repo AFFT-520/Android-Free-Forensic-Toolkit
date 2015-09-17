@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import os
 import fileinput
+import os
+
 
 def sethome ():
     os.system('cls' if os.name == 'nt' else 'clear')
