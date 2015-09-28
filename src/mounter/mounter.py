@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, os, subprocess, re, pdb
+import sys, os, subprocess, re, pdb, time
 
 def mount(case):
 	if not os.path.isfile(case + '/image/image.dd'):
@@ -22,6 +22,7 @@ def mount(case):
 	else:
 		loop = str(loop)
 		print(loop)
+		time.sleep(2)
 		loopsearchstring = "/dev/loop[0-99]"
 		match=re.search(loopsearchstring, loop)
 		loopadd=match.group(0)
@@ -43,3 +44,7 @@ def mount(case):
 	mstatusfile = open(mountedstatus, "w")
 	mstatusfile.write("1")
 	mstatusfile.close()
+	loopnumfile = os.path.join(case, "mount", "loopnumber")
+	lnumfile = open(loopnumfile, "w")
+	lnumfile.write(loopnum)
+	lnumfile.close()

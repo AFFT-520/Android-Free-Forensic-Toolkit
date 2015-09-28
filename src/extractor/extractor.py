@@ -6,14 +6,14 @@ import report.makereports
 import mounter.mount
 def main(case):
 	os.system('cls' if os.name == 'nt' else 'clear')
-	reportoption = selectreport()
+	reportoption = selectreport() #Ask to make HTML reports
 	if sys.platform in ('linux', 'linux2'):
 		mountcheck = os.path.join(case, "mount", "mountstatus")
 		mstatusfile = open (mountcheck, 'r')
 		mstatusread = mstatusfile.read()
 		mstatusread = int(mstatusread)
 		mstatbool = False
-		if mstatusread == 1:
+		if mstatusread == 1: #If the program doesn't believe the disk is mounted, mount the image. If it does, continue. 
 			mstatbool = True
 		mstatusfile.close()
 		if mstatbool == False:
@@ -25,10 +25,10 @@ def main(case):
 	if reportoption == 1:
 		timeline = askfortimeline(case)
 	try:
-		if os.path.exists(extractdir):
+		if os.path.exists(extractdir): #refreshes the extract directory
 			shutil.rmtree(extractdir)
 			os.makedirs(extractdir)
-		if os.path.exists(os.path.join(userdatadir, "system", "users")):
+		if os.path.exists(os.path.join(userdatadir, "system", "users")):#These are the extraction scripts for each service
 			extractor.accounts.extract.extract(case, userdatadir)
 		if os.path.exists(os.path.join(userdatadir, "data", "com.android.email")):
 			extractor.aosp_email.extract.extract(case, userdatadir)	
@@ -118,7 +118,7 @@ def writeuserdata(filepath, case):
 		fileopen.close
 
 
-def selectreport():
+def selectreport(): #Gives the user the option to make HTML reports on extracted data
 	reportoption = 2
 	while reportoption == 2:
 		os.system('cls' if os.name == 'nt' else 'clear')
@@ -133,7 +133,7 @@ def selectreport():
 	return reportoption
 	
 
-def askfortimeline(case):
+def askfortimeline(case): #If the user opts into reports, ask if they want to make a timeline too
 	print("Create a timeline of all supported events? (Takes significantly longer)")
 	answer = input('[Y/N]')
 	answer = answer.upper()
