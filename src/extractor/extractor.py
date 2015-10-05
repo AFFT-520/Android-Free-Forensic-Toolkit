@@ -55,6 +55,7 @@ def main(case):
 			extractor.whatsapp.extract.extract(case, userdatadir)
 		if os.path.exists(os.path.join(userdatadir, "data", "com.tinder")):
 			extractor.tinder.extract.extract(case, userdatadir)
+		input("Debug! go copy the 'tinder' folder")
 		if sys.platform in ('linux', 'linux2'):
 			print("--> [Linux] Fixing permissions for easy, non-root access")
 			os.system('chown -R $USER "' + extractdir + '"')

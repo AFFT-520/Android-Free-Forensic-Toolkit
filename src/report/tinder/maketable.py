@@ -41,7 +41,10 @@ def maketable(reportfile, case):
 			for row2 in reportfile_cursor2.execute("SELECT text FROM messages WHERE created = '" + str(entry1) + "'"):
 				for entry2 in row2:
 					reportfile.write("<TD>" + str(entry2) + "</TD>")
-			reportfile.write("<TD>" + str(entry1) + "</TD>") ##this inserts a table cell
+			timestr = str(entry1)
+			timestamp=datetime.datetime.strptime(timestr, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()
+			timestamp = str(timestamp)
+			reportfile.write("<TD>" + datetime.datetime.fromtimestamp(float(timestamp)).strftime('%Y-%m-%d %H:%M:%S') + "</TD>") ##this inserts a table cell
 			reportfile.write("</TR>") ##closes the table row
 			
 def tlmake(case):
@@ -57,10 +60,10 @@ def tlmake(case):
 	for row1 in reportfile_cursor1.execute("SELECT created FROM messages ORDER BY created DESC"):		##This is your initial SQL statement execution.
 		for entry1 in row1:
 			timestr = str(entry1)
-			timestr = timestr[:-5]
-			timestamp=datetime.datetime.strptime(timestr, "%Y-%m-%dT%H:%M:%S").timestamp()
+			timestamp=datetime.datetime.strptime(timestr, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()
+			timestamp = float(timestamp)*1000
 			timestamp = str(timestamp)
-			timestamp = timestamp[:-2]
+			print(timestamp)
 			for row2 in reportfile_cursor2.execute("SELECT user_id FROM messages WHERE created = '" + str(entry1) + "'"):
 				for entry2 in row2:
 					user = 0
