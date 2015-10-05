@@ -85,5 +85,11 @@ LEGAL
 LICENSE
 This program is licensed under GPLv2. Full details of the license are provided in the LICENSE file. In essence, feel free to share this with your friends, modify it, improve upon it, sell support, etc. BUT: You cannot distribute a copy that has my name (or the name of any other contributer) removed, nor can you remove the GPLv2 licensing. If you distribute a modified version in binary (somehow) you must also distribute the source code, and both must be licensed under GPLv2 or compatible.
 
+The Windows packager for the toolkit also distributes some free/open source software, notably ADB and Rodney Beede's Win32 port of Netcat. 
+
+* The Netcat family, including this build, is GPLv2 software, and the source for the build used here can be found at: https://www.rodneybeede.com/downloads/nc111nt_rodneybeede.zip
+
+* ADB is licensed under Apache 2.0 The source code for ADB can be found at https://android.googlesource.com/platform/system/core/+/android-4.4_r1/adb/adb.c
+
 DISCLAIMER
 This program is provided under the understanding that it is to be used on devices only for purposes where lawful authorisation is in place (including but not limited to: your own device, a device for which you have express and fully-informed permission from the owner, a device for which you have a valid subpoena regarding it's data, etc). By using this program, you hereby state that you understand this and accept any consequences that arise from the use of this tool, and that neither the program's author or contributors are responsible for your use of the tool. The tool notifies the user on first startup and records affirmative responses for each user.
