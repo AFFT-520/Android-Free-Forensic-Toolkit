@@ -1,21 +1,32 @@
 #!/usr/bin/env python
 
-import os, time, sys
+import os, time, sys, subprocess
 
 def main(casefolder):
 	print("\n --> Imaging command sent\n")
 	print(" --> Giving device 10 seconds to process command\n")
 	time.sleep(10)
 	imagedir = os.path.join(casefolder, "image")
-	image = os.path.join(imagedir, "image.dd")
+	image = os.path.join(imagedir, "image.dd")		
 	cwd = os.path.dirname(os.path.realpath(__file__))
-	winadb = os.path.join(cwd, '..', 'bin', 'adb.exe')
-	winnc = os.path.join(cwd, '..', 'bin', 'nc.exe')
-	os.system(winadb + ' forward tcp:5555 tcp:5555' if os.name == 'nt' else 'adb forward tcp:5555 tcp:5555')
-	winnc_exec = winnc + ' 127.0.0.1 5555 > ' + image
+	cwd = cwd.replace("imaging", "")
+	bindir = os.path.join(cwd, "bin")
+	winadb = os.path.join(bindir, 'adb.exe')
+	winnc = os.path.join(bindir, 'nc.exe')
+	if os.name == 'nt':
+		subprocess.Popen([winadb, 'forward', 'tcp:5555', 'tcp:5555'])
+	else:
+		subprocess.Popen(['adb', 'forward', 'tcp:5555', 'tcp:5555'])
+	winnc_exec =  "'" + winnc + "'" + ' 127.0.0.1 5555 \> ' + image
 	linnc_exec = 'nc 127.0.0.1 5555 > ' + image
 	print(" --> Writing image to host PC\n")
-	os.system(winnc_exec if os.name == 'nt' else linnc_exec)
+	#os.system(winnc_exec if os.name == 'nt' else linnc_exec)
+	if os.name == 'nt':
+		with open(image, "wb") as out:
+			subprocess.Popen([winnc, '127.0.0.1', '5555'], stdout=out)
+	else:
+		with open(image, "wb") as out:
+			subprocess.Popen(['nc', '127.0.0.1', '5555'], stdout=out)
 	if sys.platform in ('linux', 'linux2'):
 		mountdir = os.path.join(casefolder, "mount")
 		if not os.path.exists(mountdir):
