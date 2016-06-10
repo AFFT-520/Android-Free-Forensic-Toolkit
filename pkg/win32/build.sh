@@ -9,4 +9,4 @@ cp -rf apsw ./pynsist_pkgs/apsw
 rm -rf apsw
 cp -rf ./pynsist_pkgs ./build/pynsist_pkgs
 cd build
-python3.4 -m nsist installer.cfg
+python3.5 -m nsist installer.cfg

@@ -2,7 +2,6 @@
 !define PRODUCT_VERSION "3"
 !define PY_VERSION "3.4.0"
 !define PY_MAJOR_VERSION "3.4"
-!define PY_QUALIFIER "3.4-32"
 !define BITNESS "32"
 !define ARCH_TAG ""
 !define INSTALLER_NAME "Android_Free_Forensic_Toolkit_Alpha_3.exe"
@@ -36,12 +35,14 @@ Section -SETTINGS
 SectionEnd
 
 Section "Python ${PY_VERSION}" sec_py
-  File "python-${PY_VERSION}${ARCH_TAG}.msi"
+
   DetailPrint "Installing Python ${PY_MAJOR_VERSION}, ${BITNESS} bit"
-  ExecWait 'msiexec /i "$INSTDIR\python-${PY_VERSION}${ARCH_TAG}.msi" \
+    File "python-3.4.0.msi"
+    ExecWait 'msiexec /i "$INSTDIR\python-3.4.0.msi" \
             /qb ALLUSERS=1 TARGETDIR="$COMMONFILES${BITNESS}\Python\${PY_MAJOR_VERSION}"'
-  Delete $INSTDIR\python-${PY_VERSION}${ARCH_TAG}.msi
+  Delete "$INSTDIR\python-3.4.0.msi"
 SectionEnd
+
 
 Section "!${PRODUCT_NAME}" sec_app
   SectionIn RO
@@ -53,8 +54,8 @@ Section "!${PRODUCT_NAME}" sec_app
   
   ; Install files
     SetOutPath "$INSTDIR"
-      File "Android_Free_Forensic_Toolkit_Alpha.launch.py"
       File "afft.ico"
+      File "Android_Free_Forensic_Toolkit_Alpha.launch.py"
   
   ; Install directories
     SetOutPath "$INSTDIR\imaging"
@@ -74,10 +75,11 @@ Section "!${PRODUCT_NAME}" sec_app
     CreateShortCut "$SMPROGRAMS\Android Free Forensic Toolkit Alpha.lnk" "py" \
       '"$INSTDIR\Android_Free_Forensic_Toolkit_Alpha.launch.py"' "$INSTDIR\afft.ico"
   SetOutPath "$INSTDIR"
+
   
   ; Byte-compile Python files.
   DetailPrint "Byte-compiling Python modules..."
-  nsExec::ExecToLog 'py -${PY_QUALIFIER} -m compileall -q "$INSTDIR\pkgs"'
+  nsExec::ExecToLog 'py -3.4-32 -m compileall -q "$INSTDIR\pkgs"'
   WriteUninstaller $INSTDIR\uninstall.exe
   ; Add ourselves to Add/remove programs
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" \
@@ -92,6 +94,13 @@ Section "!${PRODUCT_NAME}" sec_app
                    "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}" \
                    "NoRepair" 1
+
+  ; Check if we need to reboot
+  IfRebootFlag 0 noreboot
+    MessageBox MB_YESNO "A reboot is required to finish the installation. Do you wish to reboot now?" \
+                /SD IDNO IDNO noreboot
+      Reboot
+  noreboot:
 SectionEnd
 
 Section "Uninstall"
@@ -99,9 +108,12 @@ Section "Uninstall"
   Delete $INSTDIR\uninstall.exe
   Delete "$INSTDIR\${PRODUCT_ICON}"
   RMDir /r "$INSTDIR\pkgs"
+
+  ; Remove ourselves from %PATH%
+
   ; Uninstall files
-    Delete "$INSTDIR\Android_Free_Forensic_Toolkit_Alpha.launch.py"
     Delete "$INSTDIR\afft.ico"
+    Delete "$INSTDIR\Android_Free_Forensic_Toolkit_Alpha.launch.py"
   ; Uninstall directories
     RMDir /r "$INSTDIR\imaging"
     RMDir /r "$INSTDIR\mounter"
@@ -113,6 +125,7 @@ Section "Uninstall"
   RMDir $INSTDIR
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 SectionEnd
+
 
 
 ; Functions
@@ -129,4 +142,5 @@ Function .onMouseOverSection
     StrCmp $0 ${sec_app} "" +2
       SendMessage $R0 ${WM_SETTEXT} 0 "STR:${PRODUCT_NAME}"
     
+
 FunctionEnd
