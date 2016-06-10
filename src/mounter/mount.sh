@@ -1,6 +1,7 @@
 #!/bin/bash
 
 loopnum=`kpartx -vrag $1/image/image.dd -p afft | grep -o -m 1 "/dev/loop." | sed 's/\/dev\/loop//g'`
+sleep 5
 echo $loopnum
 loopsearch="loop${loopnum}afft*"
 echo $loopsearch
